@@ -1,0 +1,14 @@
+version: '3'
+services:
+  app:
+    image: mysql:8.0.18
+    ports:
+      - '3306:3306'
+    volumes:
+      - /c/Users/khleb/IdeaProjects/AQA.3.2.Deadline:/docker-entrypoint-initdb.d
+      - /c/Users/khleb/projects:/data
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=pass
