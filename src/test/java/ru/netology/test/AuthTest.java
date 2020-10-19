@@ -4,7 +4,6 @@ import lombok.val;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataHelper;
-import ru.netology.mode.DashboardPage;
 import ru.netology.mode.LoginPage;
 
 import java.sql.SQLException;
@@ -13,8 +12,7 @@ public class AuthTest {
 
     @AfterAll
     static void cleanDataBase() throws SQLException {
-        val dashboardPage = new DashboardPage();
-        dashboardPage.cleanDataBase();
+        DataHelper.cleanDataBase();
     }
 
     @Test
@@ -25,7 +23,7 @@ public class AuthTest {
         val verificationPage = loginPage.validLogin(authInfo);
         verificationPage.verificationPage();
         val verificationCode = DataHelper.getVerificationInfo();
-        val dashboardPage = verificationPage.validVerify(verificationCode.getCode());
+        val dashboardPage = verificationPage.validVerify(DataHelper.getVerificationInfo());
         dashboardPage.dashboardPage();
     }
 
@@ -37,7 +35,7 @@ public class AuthTest {
         val verificationPage = loginPage.validLogin(authInfo);
         verificationPage.verificationPage();
         val verificationCode = DataHelper.getVerificationInfo();
-        val dashboardPage = verificationPage.validVerify(verificationCode.getCode());
+        val dashboardPage = verificationPage.validVerify(DataHelper.getVerificationInfo());
         dashboardPage.dashboardPage();
     }
 
@@ -48,10 +46,13 @@ public class AuthTest {
         val authInfo = DataHelper.getAuthInfoWithWrongPassword();
         loginPage.validLogin(authInfo);
         loginPage.errorNotificationCreate();
+        loginPage.clearFields();
         loginPage.validLogin(authInfo);
         loginPage.errorNotificationCreate();
+        loginPage.clearFields();
         loginPage.validLogin(authInfo);
         loginPage.errorNotificationCreate();
+        loginPage.clearFields();
         loginPage.validLogin(authInfo);
         loginPage.errorNotificationCreate();
     }

@@ -4,18 +4,24 @@ import com.github.javafaker.Faker;
 import lombok.Value;
 import lombok.val;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DataHelper {
 
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/app";
+    private static final String DB_USER = "app";
+    private static final String DB_PASS = "pass";
+    Connection conn = null;
+
     @Value
     public static class AuthInfo {
         private String login;
         private String password;
+
     }
 
     public static AuthInfo getAuthInfo() {
@@ -32,8 +38,7 @@ public class DataHelper {
         val runner = new QueryRunner();
         val countSQL = "SELECT COUNT(*) FROM users;";
         val dataSQL = "INSERT INTO users (id, login, password, status) VALUES (?, ?, ?, ?);";
-        try (val conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app",
-                "app", "pass")) {
+        try (val conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
             long count = runner.query(conn, countSQL, new ScalarHandler<>());
             runner.update(conn, dataSQL, count,
                     login, "$2a$10$Pml3uwcimo7D/XZVwf2OaOWML5yYu5c.ziYKTwG36kAhzdmJRCYN2", status);
@@ -46,15 +51,28 @@ public class DataHelper {
         private String code;
     }
 
-    public static VerificationInfo getVerificationInfo() throws SQLException {
+    public static String getVerificationInfo() throws SQLException {
         String verificationCode = "";
-        val codesSQL = "SELECT * FROM auth_codes ORDER BY created DESC LIMIT 1;";
+        val codesSQL = "SELECT code FROM auth_codes WHERE created = (SELECT max(created) FROM auth_codes);";
         val runner = new QueryRunner();
-        try (val conn = DriverManager.getConnection("jdbc:mysql://192.168.5.108:3306/app",
-                "app", "pass")) {
-            val usersCode = runner.query(conn, codesSQL, new BeanHandler<>(User.class));
-            verificationCode = usersCode.getCode();
+        try (val conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+            val usersCode = runner.query(conn, codesSQL, new ScalarHandler<>());
+            verificationCode = (String) usersCode;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return new VerificationInfo(verificationCode);
+        return verificationCode;
+    }
+
+    public static void cleanDataBase() throws SQLException {
+        val cleanCards = "DELETE FROM cards";
+        val cleanAuthCodes = "DELETE FROM auth_codes";
+        val cleanUser = "DELETE FROM users";
+        val runner = new QueryRunner();
+        try (val conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+            val cleanCardsUser = runner.execute(conn, cleanCards, new ScalarHandler<>());
+            val cleanAuthCodesUser = runner.execute(conn, cleanAuthCodes, new ScalarHandler<>());
+            val cleanUserUser = runner.execute(conn, cleanUser, new ScalarHandler<>());
+        }
     }
 }
