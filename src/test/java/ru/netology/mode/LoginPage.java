@@ -1,6 +1,7 @@
 package ru.netology.mode;
 
 import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.Keys;
 import ru.netology.data.DataHelper;
 
 import static com.codeborne.selenide.Condition.visible;
@@ -21,8 +22,8 @@ public class LoginPage {
     }
 
     public void clearFields() {
-        loginForm.clear();
-        passwordForm.clear();
+        loginForm.doubleClick().sendKeys(Keys.BACK_SPACE);
+        passwordForm.doubleClick().sendKeys(Keys.BACK_SPACE);
     }
 
     public VerificationPage validLogin(DataHelper.AuthInfo info) {

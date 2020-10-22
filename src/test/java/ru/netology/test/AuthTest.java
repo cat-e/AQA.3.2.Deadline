@@ -6,17 +6,15 @@ import org.junit.jupiter.api.Test;
 import ru.netology.data.DataHelper;
 import ru.netology.mode.LoginPage;
 
-import java.sql.SQLException;
-
 public class AuthTest {
 
     @AfterAll
-    static void cleanDataBase() throws SQLException {
+    static void cleanDataBase() {
         DataHelper.cleanDataBase();
     }
 
     @Test
-    void shouldLoginWithAuthCode() throws SQLException{
+    void shouldLoginWithAuthCode() {
         val loginPage = new LoginPage();
         loginPage.openLoginPage();
         val authInfo = DataHelper.getAuthInfo();
@@ -28,7 +26,7 @@ public class AuthTest {
     }
 
     @Test
-    void shouldLoginWithRandomFakerUser() throws SQLException {
+    void shouldLoginWithRandomFakerUser() {
         val loginPage = new LoginPage();
         loginPage.openLoginPage();
         val authInfo = DataHelper.getRandomAuthInfo("active");
@@ -45,13 +43,10 @@ public class AuthTest {
         loginPage.openLoginPage();
         val authInfo = DataHelper.getAuthInfoWithWrongPassword();
         loginPage.validLogin(authInfo);
-        loginPage.errorNotificationCreate();
         loginPage.clearFields();
         loginPage.validLogin(authInfo);
-        loginPage.errorNotificationCreate();
         loginPage.clearFields();
         loginPage.validLogin(authInfo);
-        loginPage.errorNotificationCreate();
         loginPage.clearFields();
         loginPage.validLogin(authInfo);
         loginPage.errorNotificationCreate();
