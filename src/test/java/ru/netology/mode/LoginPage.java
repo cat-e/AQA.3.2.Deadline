@@ -18,7 +18,7 @@ public class LoginPage {
     }
 
     public void errorNotificationCreate() {
-        $("[data-test-id='error-notification']").shouldHave(text("Неверно указан логин или пароль"));
+        $("[data-test-id='error-notification']").shouldHave(text("Система заблокирована"));
     }
 
     public void clearFields() {

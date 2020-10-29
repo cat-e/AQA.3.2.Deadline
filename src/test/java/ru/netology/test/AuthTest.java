@@ -38,7 +38,7 @@ public class AuthTest {
     }
 
     @Test
-    void loginFourTimesWithWrongPassword() {
+    void shouldBlockUserAfterFourTimesWithWrongPassword() {
         val loginPage = new LoginPage();
         loginPage.openLoginPage();
         val authInfo = DataHelper.getAuthInfoWithWrongPassword();
