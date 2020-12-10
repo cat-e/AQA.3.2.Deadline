@@ -1,4 +1,4 @@
-package ru.netology.mode;
+package ru.netology.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,4 +12,5 @@ public class User {
     private String login;
     private String password;
     private String status;
+    private String code;
 }
